@@ -1,4 +1,4 @@
-service: nest-serverless-framework-demo
+service: lp-back
 
 plugins:
   - serverless-plugin-typescript
@@ -15,10 +15,10 @@ provider:
   name: aws
   runtime: nodejs18.x
 
-# package:
-#   individually: true
-#   include:
-#     - dist/photo/photo.entity.js
+package:
+  individually: true
+  # include:
+  #   - src/dtos/*
 
 functions:
   main: # The name of the lambda function
