@@ -6,9 +6,11 @@ import { MultiplyRequestDto } from "../../src/dtos/multiply-request.dto";
 import { SubtractRequestDto } from "../dtos/subtract-request.dto";
 import { SquareRootRequestDto } from "../dtos/square-root-request.dto";
 import { StringOperationResponseDTO } from "../dtos/string-operation-response.dto";
+import { OperationsService } from "./operations.service";
 
 @Controller("operations")
 export class OperationsController {
+  constructor(private readonly operationsService: OperationsService) {}
   @Post("add")
   add(dto: AddRequestDto): NumericOperationResponseDTO {
     return {
