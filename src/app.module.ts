@@ -4,24 +4,36 @@ import { AppService } from "./app.service";
 import { OperationsController } from "./operations/operations.controller";
 import { OperationsService } from "./operations/operations.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { UserController } from './user/user.controller';
-import { UserService } from './user/user.service';
+import { UsersController } from "./users/users.controller";
+import { UsersService } from "./users/users.service";
+import { DataSource } from "typeorm";
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: "postgres",
-      host: "localhost",
-      port: 5432,
-      username: "postgre",
-      password: "Password@@01",
-      database: "test",
-      entities: [__dirname + "/**/*.entity{.ts,.js}"],
-      synchronize: false,
+    TypeOrmModule.forRootAsync({
+      useFactory: () => ({
+        type: "postgres",
+        host: "localhost",
+        port: 5432,
+        username: "postgres",
+        password: "Password@@01",
+        database: "test",
+        logging: "all",
+        logger: "debug",
+        entities: [__dirname + "/**/*.entity{.ts,.js}"],
+        synchronize: false,
+        autoLoadEntities: true,
+      }),
+      dataSourceFactory: async (options) => {
+        console.error(options);
+        //@ts-ignore
+        const dataSource = await new DataSource(options).initialize();
+        return dataSource;
+      },
     }),
   ],
-  controllers: [AppController, OperationsController, UserController],
-  providers: [AppService, OperationsService, UserService],
+  controllers: [AppController, OperationsController, UsersController],
+  providers: [AppService, OperationsService, UsersService],
 })
 export class AppModule {
   constructor() {
