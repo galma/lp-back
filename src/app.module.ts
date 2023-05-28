@@ -6,31 +6,21 @@ import { OperationsService } from "./operations/operations.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UsersController } from "./users/users.controller";
 import { UsersService } from "./users/users.service";
-import { DataSource } from "typeorm";
+import { User } from "./entities/user.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync({
-      useFactory: () => ({
-        type: "postgres",
-        host: "localhost",
-        port: 5432,
-        username: "postgres",
-        password: "Password@@01",
-        database: "test",
-        logging: "all",
-        logger: "debug",
-        entities: [__dirname + "/**/*.entity{.ts,.js}"],
-        synchronize: false,
-        autoLoadEntities: true,
-      }),
-      dataSourceFactory: async (options) => {
-        console.error(options);
-        //@ts-ignore
-        const dataSource = await new DataSource(options).initialize();
-        return dataSource;
-      },
+    TypeOrmModule.forRoot({
+      type: "postgres",
+      host: "localhost",
+      port: 5432,
+      username: "postgres",
+      password: "Password@@01",
+      database: "test",
+      entities: [User],
+      synchronize: false,
     }),
+    TypeOrmModule.forFeature([User]),
   ],
   controllers: [AppController, OperationsController, UsersController],
   providers: [AppService, OperationsService, UsersService],

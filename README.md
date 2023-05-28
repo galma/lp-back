@@ -23,3 +23,4 @@ sls logs -f main
 Generate Migration:
 
 npm run typeorm migration:generate -- ./src/migrations/Init -d ./src/datasource.ts
+npm run typeorm migration:run -- -d ./src/datasource.ts
