@@ -20,3 +20,6 @@ To fetch logs, once the lambda deployed, run:
 sls logs -f main
 ```
 
+Generate Migration:
+
+npm run typeorm migration:generate -- ./src/migrations/Init -d ./src/datasource.ts
