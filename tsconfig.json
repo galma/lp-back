@@ -15,7 +15,7 @@
     "strictPropertyInitialization": false,
     "baseUrl": "."
   },
-  "exclude": ["node_modules", "./src/datasource.ts"]
+  "exclude": ["node_modules", "./src/datasource.ts", "./src/migrations/*.ts"]
 }
 // {
 //   "compilerOptions": {

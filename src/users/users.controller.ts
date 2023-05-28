@@ -2,7 +2,7 @@ import { Body, Controller, Post } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { SignUpRequestDto } from "../../src/dtos/sign-up-request.dto";
 import { SignInResponseDTO } from "../../src/dtos/sign-in-response.dto";
-import { SignInRequestDto } from "src/dtos/sign-in-request.dto";
+import { SignInRequestDto } from "../../src/dtos/sign-in-request.dto";
 
 @Controller("users")
 export class UsersController {

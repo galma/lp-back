@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { AddRequestDto } from "../../src/dtos/add-request.dto";
 import { DivideRequestDto } from "../../src/dtos/divide-request.dto";
 import { NumericOperationResponseDTO } from "../../src/dtos/numeric-operation-response.dto";
@@ -12,11 +12,9 @@ import { OperationsService } from "./operations.service";
 export class OperationsController {
   constructor(private readonly operationsService: OperationsService) {}
   @Post("add")
-  add(dto: AddRequestDto): NumericOperationResponseDTO {
-    return {
-      remainingBalance: 100,
-      result: 5,
-    };
+  async add(@Body() dto: AddRequestDto): Promise<NumericOperationResponseDTO> {
+    const result = await this.operationsService.add(dto);
+    return result;
   }
 
   @Post("subtract")

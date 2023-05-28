@@ -6,4 +6,6 @@ export class AddRequestDto {
 
   @IsNumber()
   number2: number;
+
+  userId: string;
 }
