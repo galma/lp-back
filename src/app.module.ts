@@ -8,6 +8,7 @@ import { UsersController } from "./users/users.controller";
 import { UsersService } from "./users/users.service";
 import { User } from "./entities/user.entity";
 import { Operation } from "./entities/operation.entity";
+import { Record } from "./entities/record.entity";
 
 @Module({
   imports: [
@@ -18,10 +19,10 @@ import { Operation } from "./entities/operation.entity";
       username: "postgres",
       password: "Password@@01",
       database: "test",
-      entities: [User, Operation],
+      entities: [User, Operation, Record],
       synchronize: false,
     }),
-    TypeOrmModule.forFeature([User, Operation]),
+    TypeOrmModule.forFeature([User, Operation, Record]),
   ],
   controllers: [AppController, OperationsController, UsersController],
   providers: [AppService, OperationsService, UsersService],

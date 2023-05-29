@@ -9,6 +9,7 @@ import { Operation, OperationType } from "../entities/operation.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "../entities/user.entity";
+import { Record } from "../entities/record.entity";
 
 @Injectable()
 export class OperationsService {
@@ -24,34 +25,37 @@ export class OperationsService {
     number2,
     userId,
   }: AddRequestDto): Promise<NumericOperationResponseDTO> {
-    const operationCost = await this.getOperationCost(OperationType.Add);
+    const operation = await this.getOperation(OperationType.Add);
 
-    if (!(await this.isEnoughBalance(userId, operationCost))) {
+    if (!(await this.isEnoughBalance(userId, operation.cost))) {
       throw new ForbiddenException("not enough balance");
     }
 
-    const newBalance = await this.consumeBalanceAndSaveRecord(
+    const operationResult = number1 + number2;
+
+    const newBalance = await this.saveOperation(
       userId,
-      operationCost
+      operation,
+      operationResult
     );
 
     const result = number1 + number2;
-    const operationResult = {
+    const response = {
       result,
       remainingBalance: newBalance,
     } as NumericOperationResponseDTO;
 
-    return operationResult;
+    return response;
   }
 
-  async getOperationCost(operationType: OperationType): Promise<number> {
+  async getOperation(operationType: OperationType): Promise<Operation> {
     const operation = await this.operationsRepository.findOneBy({
       type: operationType,
     });
 
     if (!operation) throw new Error();
 
-    return Number(operation.cost);
+    return operation;
   }
 
   async isEnoughBalance(userId: string, operationCost: number) {
@@ -61,14 +65,13 @@ export class OperationsService {
 
     const userBalance = Number(user.balance);
 
-    console.log(userBalance >= operationCost);
-
-    return userBalance >= operationCost;
+    return userBalance >= Number(operationCost);
   }
 
-  async consumeBalanceAndSaveRecord(
+  async saveOperation(
     userId: string,
-    amount: number
+    operation: Operation,
+    operationResult: string | number
   ): Promise<number> {
     const newBalance = await this.operationsRepository.manager.connection.transaction(
       "SERIALIZABLE", //ensure highest level of transaction isolation
@@ -77,7 +80,7 @@ export class OperationsService {
 
         if (!user) throw new Error("invalid user");
 
-        const newBalance = Number(user.balance) - amount;
+        const newBalance = Number(user.balance) - Number(operation.cost);
 
         if (newBalance < 0) throw new Error("inssuficient balance");
 
@@ -86,6 +89,13 @@ export class OperationsService {
           { id: userId },
           { balance: newBalance }
         );
+
+        await entityManager.insert(Record, {
+          operation: { id: operation.id },
+          userBalance: user.balance,
+          amount: operation.cost,
+          operationResponse: operationResult as string,
+        });
 
         return newBalance;
       }
