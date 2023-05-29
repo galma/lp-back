@@ -6,6 +6,7 @@ import {
   JoinColumn,
 } from "typeorm";
 import { Operation } from "./operation.entity";
+import { User } from "./user.entity";
 
 @Entity()
 export class Record {
@@ -16,12 +17,17 @@ export class Record {
   @JoinColumn({ name: "operation_id" })
   operation: Operation;
 
+  @ManyToOne((type) => User)
+  @JoinColumn({ name: "user_id" })
+  user: User;
+
   @Column("numeric", { precision: 10, scale: 2 })
   userBalance: number;
 
   @Column("numeric", { precision: 10, scale: 2 })
   amount: number;
 
+  @Column()
   operationResponse: string;
 
   @Column({ type: "timestamptz", default: () => "NOW()" })

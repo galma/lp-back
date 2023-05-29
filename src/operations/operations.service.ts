@@ -10,6 +10,13 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "../entities/user.entity";
 import { Record } from "../entities/record.entity";
+import { SubtractRequestDto } from "../dtos/subtract-request.dto";
+import { MultiplyRequestDto } from "../dtos/multiply-request.dto";
+import { DivideRequestDto } from "../dtos/divide-request.dto";
+import { SquareRootRequestDto } from "../dtos/square-root-request.dto";
+import { StringOperationResponseDTO } from "../dtos/string-operation-response.dto";
+import { RandomStringRequestDto } from "../dtos/random-string-request.dto";
+import { RandomOrgClient } from "../client/random-org.client";
 
 @Injectable()
 export class OperationsService {
@@ -17,7 +24,8 @@ export class OperationsService {
     @InjectRepository(Operation)
     private operationsRepository: Repository<Operation>,
     @InjectRepository(User)
-    private userRepository: Repository<User>
+    private userRepository: Repository<User>,
+    private readonly randomOrgClient: RandomOrgClient
   ) {}
 
   async add({
@@ -39,11 +47,146 @@ export class OperationsService {
       operationResult
     );
 
-    const result = number1 + number2;
     const response = {
-      result,
+      result: operationResult,
       remainingBalance: newBalance,
     } as NumericOperationResponseDTO;
+
+    return response;
+  }
+
+  async subtract({
+    number1,
+    number2,
+    userId,
+  }: SubtractRequestDto): Promise<NumericOperationResponseDTO> {
+    const operation = await this.getOperation(OperationType.Subtract);
+
+    if (!(await this.isEnoughBalance(userId, operation.cost))) {
+      throw new ForbiddenException("not enough balance");
+    }
+
+    const operationResult = number1 - number2;
+
+    const newBalance = await this.saveOperation(
+      userId,
+      operation,
+      operationResult
+    );
+
+    const response = {
+      result: operationResult,
+      remainingBalance: newBalance,
+    } as NumericOperationResponseDTO;
+
+    return response;
+  }
+
+  async multiply({
+    number1,
+    number2,
+    userId,
+  }: MultiplyRequestDto): Promise<NumericOperationResponseDTO> {
+    const operation = await this.getOperation(OperationType.Multiply);
+
+    if (!(await this.isEnoughBalance(userId, operation.cost))) {
+      throw new ForbiddenException("not enough balance");
+    }
+
+    const operationResult = number1 * number2;
+
+    const newBalance = await this.saveOperation(
+      userId,
+      operation,
+      operationResult
+    );
+
+    const response = {
+      result: operationResult,
+      remainingBalance: newBalance,
+    } as NumericOperationResponseDTO;
+
+    return response;
+  }
+
+  async divide({
+    number1,
+    number2,
+    userId,
+  }: DivideRequestDto): Promise<NumericOperationResponseDTO> {
+    if (number2 === 0) throw new BadRequestException();
+
+    const operation = await this.getOperation(OperationType.Divide);
+
+    if (!(await this.isEnoughBalance(userId, operation.cost))) {
+      throw new ForbiddenException("not enough balance");
+    }
+
+    const operationResult = number1 / number2;
+
+    const newBalance = await this.saveOperation(
+      userId,
+      operation,
+      operationResult
+    );
+
+    const response = {
+      result: operationResult,
+      remainingBalance: newBalance,
+    } as NumericOperationResponseDTO;
+
+    return response;
+  }
+
+  async squareRoot({
+    number1,
+    userId,
+  }: SquareRootRequestDto): Promise<NumericOperationResponseDTO> {
+    if (number1 < 0) throw new BadRequestException();
+
+    const operation = await this.getOperation(OperationType.Divide);
+
+    if (!(await this.isEnoughBalance(userId, operation.cost))) {
+      throw new ForbiddenException("not enough balance");
+    }
+
+    const operationResult = Math.sqrt(number1);
+
+    const newBalance = await this.saveOperation(
+      userId,
+      operation,
+      operationResult
+    );
+
+    const response = {
+      result: operationResult,
+      remainingBalance: newBalance,
+    } as NumericOperationResponseDTO;
+
+    return response;
+  }
+
+  async randomString({
+    userId,
+  }: RandomStringRequestDto): Promise<StringOperationResponseDTO> {
+    const operation = await this.getOperation(OperationType.RandomString);
+
+    if (!(await this.isEnoughBalance(userId, operation.cost))) {
+      throw new ForbiddenException("not enough balance");
+    }
+
+    const operationResult = await this.randomOrgClient.getRandomString();
+
+    const newBalance = await this.saveOperation(
+      userId,
+      operation,
+      operationResult
+    );
+
+    const response = {
+      result: operationResult,
+      remainingBalance: newBalance,
+    } as StringOperationResponseDTO;
 
     return response;
   }
@@ -95,6 +238,7 @@ export class OperationsService {
           userBalance: user.balance,
           amount: operation.cost,
           operationResponse: operationResult as string,
+          user: { id: user.id },
         });
 
         return newBalance;

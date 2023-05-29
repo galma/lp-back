@@ -6,4 +6,6 @@ export class MultiplyRequestDto {
 
   @IsNumber()
   number2: number;
+
+  userId: string;
 }

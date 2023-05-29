@@ -3,10 +3,11 @@ import { AddRequestDto } from "../../src/dtos/add-request.dto";
 import { DivideRequestDto } from "../../src/dtos/divide-request.dto";
 import { NumericOperationResponseDTO } from "../../src/dtos/numeric-operation-response.dto";
 import { MultiplyRequestDto } from "../../src/dtos/multiply-request.dto";
-import { SubtractRequestDto } from "../dtos/subtract-request.dto";
-import { SquareRootRequestDto } from "../dtos/square-root-request.dto";
-import { StringOperationResponseDTO } from "../dtos/string-operation-response.dto";
+import { SubtractRequestDto } from "../../src/dtos/subtract-request.dto";
+import { SquareRootRequestDto } from "../../src/dtos/square-root-request.dto";
+import { StringOperationResponseDTO } from "../../src/dtos/string-operation-response.dto";
 import { OperationsService } from "./operations.service";
+import { RandomStringRequestDto } from "../../src/dtos/random-string-request.dto";
 
 @Controller("operations")
 export class OperationsController {
@@ -18,42 +19,42 @@ export class OperationsController {
   }
 
   @Post("subtract")
-  subtract(dto: SubtractRequestDto): NumericOperationResponseDTO {
-    return {
-      remainingBalance: 100,
-      result: 5,
-    };
+  async subtract(
+    @Body() dto: SubtractRequestDto
+  ): Promise<NumericOperationResponseDTO> {
+    const result = await this.operationsService.subtract(dto);
+    return result;
   }
 
   @Post("multiply")
-  multiply(dto: MultiplyRequestDto): NumericOperationResponseDTO {
-    return {
-      remainingBalance: 100,
-      result: 5,
-    };
+  async multiply(
+    @Body() dto: MultiplyRequestDto
+  ): Promise<NumericOperationResponseDTO> {
+    const result = await this.operationsService.multiply(dto);
+    return result;
   }
 
   @Post("divide")
-  divide(dto: DivideRequestDto): NumericOperationResponseDTO {
-    return {
-      remainingBalance: 100,
-      result: 5,
-    };
+  async divide(
+    @Body() dto: DivideRequestDto
+  ): Promise<NumericOperationResponseDTO> {
+    const result = await this.operationsService.divide(dto);
+    return result;
   }
 
   @Post("square-root")
-  squareRoot(dto: SquareRootRequestDto): NumericOperationResponseDTO {
-    return {
-      remainingBalance: 100,
-      result: 5,
-    };
+  async squareRoot(
+    @Body() dto: SquareRootRequestDto
+  ): Promise<NumericOperationResponseDTO> {
+    const result = await this.operationsService.squareRoot(dto);
+    return result;
   }
 
-  @Get("random-string")
-  randomString(): StringOperationResponseDTO {
-    return {
-      remainingBalance: 100,
-      result: "asdasdsa",
-    };
+  @Post("random-string")
+  async randomString(
+    @Body() dto: RandomStringRequestDto
+  ): Promise<StringOperationResponseDTO> {
+    const result = await this.operationsService.randomString(dto);
+    return result;
   }
 }

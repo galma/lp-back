@@ -6,4 +6,6 @@ export class SubtractRequestDto {
 
   @IsNumber()
   number2: number;
+
+  userId: string;
 }

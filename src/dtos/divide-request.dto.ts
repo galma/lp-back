@@ -24,4 +24,6 @@ export class DivideRequestDto {
 
   @IsNumber()
   number2: number;
+
+  userId: string;
 }
