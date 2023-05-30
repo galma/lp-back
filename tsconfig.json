@@ -13,7 +13,8 @@
     "emitDecoratorMetadata": true,
     "declaration": true,
     "strictPropertyInitialization": false,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "strictNullChecks": false
   },
   "exclude": ["node_modules", "./src/datasource.ts", "./src/migrations/*.ts"]
 }

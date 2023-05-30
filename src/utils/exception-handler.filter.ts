@@ -5,56 +5,54 @@ import {
   HttpStatus,
   Injectable,
   HttpException,
-} from '@nestjs/common'
-import { FastifyRequest, FastifyReply } from 'fastify'
-import * as httpStatus from 'http-status'
-import { AppError } from './AppError'
-import { Logger, LoggerSrv } from '../logger'
-import { SchemaValidationError } from './SchemaValidationFailed'
+} from "@nestjs/common";
+import * as httpStatus from "http-status";
+import { SchemaValidationError } from "../../src/errors/SchemaValidationFailed";
+import { AppError } from "../../src/errors/AppError";
 
 @Injectable()
 @Catch()
 export class HttpExceptionHandlerFilter implements ExceptionFilter {
-  constructor(@Logger('ExceptionHandler') private logger: LoggerSrv) {}
+  // constructor(@Logger('ExceptionHandler') private logger: LoggerSrv) {}
   catch(exception: Error, host: ArgumentsHost) {
-    const ctx = host.switchToHttp()
-    const response = ctx.getResponse<FastifyReply>()
-    const request = ctx.getRequest<FastifyRequest>()
-    let error
-    let res
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse();
+    const request = ctx.getRequest();
+    let error;
+    let res;
 
     if (exception instanceof SchemaValidationError) {
-      error = exception
+      error = exception;
       res = {
         statusCode: error.status,
         message: error.message,
         failedValidations: error.failedValidations,
         errorType: error.name,
-      }
+      };
     } else if (!(exception instanceof AppError)) {
       if (exception instanceof HttpException) {
-        error = exception
+        error = exception;
         if (error?.response) {
           res = {
             ...error.response,
             errorType: error.name,
-          }
+          };
         }
       } else {
         error = new AppError(
           exception.message,
           HttpStatus.INTERNAL_SERVER_ERROR,
           exception.stack
-        )
-        this.logger.error('UnhandledError', [exception], {
-          url: request.url,
-          query: request.query,
-        })
+        );
+        // this.logger.error("UnhandledError", [exception], {
+        //   url: request.url,
+        //   query: request.query,
+        // });
       }
     } else {
-      error = exception as AppError
+      error = exception as AppError;
     }
-    const status = error.getStatus()
+    const status = error.getStatus();
     if (!res) {
       res = {
         statusCode: status,
@@ -62,8 +60,8 @@ export class HttpExceptionHandlerFilter implements ExceptionFilter {
         error: httpStatus[status],
         message: error.message,
         ...(error.data && { data: error.data }),
-      }
+      };
     }
-    response.status(status).send(res)
+    response.status(status).send(res);
   }
 }

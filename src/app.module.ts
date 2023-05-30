@@ -15,12 +15,14 @@ import { ConfigModule } from "@nestjs/config";
 import { environment } from "./configuration/environment";
 import { config } from "dotenv";
 import { SchemaValidationPipe } from "./utils/schema-validation.pipe";
+import { HttpExceptionHandlerFilter } from "./utils/exception-handler.filter";
+import { EncryptionService } from "./utils/encryption.service";
 
 @Module({
   imports: [
     ConfigModule.forRoot({ load: [() => environment], isGlobal: true }),
+    //@ts-ignore
     TypeOrmModule.forRoot({
-      //@ts-ignore
       type: "postgres",
       entities: [User, Operation, Record],
       synchronize: false,
@@ -35,9 +37,14 @@ import { SchemaValidationPipe } from "./utils/schema-validation.pipe";
     OperationsService,
     UsersService,
     RandomOrgClient,
+    EncryptionService,
     {
       provide: "APP_PIPE",
       useClass: SchemaValidationPipe,
+    },
+    {
+      provide: "APP_FILTER",
+      useClass: HttpExceptionHandlerFilter,
     },
   ],
 })

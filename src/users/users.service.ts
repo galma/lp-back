@@ -10,6 +10,7 @@ import { User } from "../../src/entities/user.entity";
 import { InsertResult, Repository } from "typeorm";
 import { Record } from "../../src/entities/record.entity";
 import { ConfigService } from "@nestjs/config";
+import { EncryptionService } from "../../src/utils/encryption.service";
 
 @Injectable()
 export class UsersService {
@@ -20,7 +21,8 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Record)
     private readonly recordsRepository: Repository<Record>,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly encryptionService: EncryptionService
   ) {
     this.initialBalance = this.configService.get<number>(
       "user.initialBalance"
@@ -35,7 +37,7 @@ export class UsersService {
 
     const result: InsertResult = await this.usersRepository.insert({
       email,
-      password,
+      password: await this.encryptionService.hashPassword(password),
       balance: this.initialBalance,
     });
 
@@ -51,19 +53,21 @@ export class UsersService {
   }: SignUpRequestDto): Promise<SignInResponseDTO> {
     console.log("calling signin service");
 
-    const result = await this.usersRepository.findOneBy({ email });
+    const user = await this.usersRepository.findOneBy({ email });
 
-    if (!result) {
+    if (!user) {
       throw new UnauthorizedException();
     }
 
-    if (result.password !== password) {
+    if (
+      !(await this.encryptionService.passwordMatch(password, user.password))
+    ) {
       throw new UnauthorizedException();
     }
 
     return {
-      userId: result.id,
-      remainingBalance: result.balance,
+      userId: user.id,
+      remainingBalance: user.balance,
     };
   }
 
