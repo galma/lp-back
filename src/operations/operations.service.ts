@@ -16,7 +16,7 @@ import { DivideRequestDto } from "../dtos/divide-request.dto";
 import { SquareRootRequestDto } from "../dtos/square-root-request.dto";
 import { StringOperationResponseDTO } from "../dtos/string-operation-response.dto";
 import { RandomStringRequestDto } from "../dtos/random-string-request.dto";
-import { RandomOrgClient } from "../client/random-org.client";
+import { RandomOrgClient } from "../clients/random-org.client";
 
 @Injectable()
 export class OperationsService {

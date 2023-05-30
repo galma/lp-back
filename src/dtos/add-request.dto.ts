@@ -1,4 +1,4 @@
-import { IsNumber } from "class-validator";
+import { IsNumber, IsUUID } from "class-validator";
 
 export class AddRequestDto {
   @IsNumber()
@@ -7,5 +7,6 @@ export class AddRequestDto {
   @IsNumber()
   number2: number;
 
+  @IsUUID()
   userId: string;
 }

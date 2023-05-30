@@ -10,10 +10,11 @@ import { User } from "./entities/user.entity";
 import { Operation } from "./entities/operation.entity";
 import { Record } from "./entities/record.entity";
 import { HttpModule } from "@nestjs/axios";
-import { RandomOrgClient } from "./client/random-org.client";
+import { RandomOrgClient } from "./clients/random-org.client";
 import { ConfigModule } from "@nestjs/config";
 import { environment } from "./configuration/environment";
 import { config } from "dotenv";
+import { SchemaValidationPipe } from "./utils/schema-validation.pipe";
 
 @Module({
   imports: [
@@ -29,7 +30,16 @@ import { config } from "dotenv";
     HttpModule,
   ],
   controllers: [AppController, OperationsController, UsersController],
-  providers: [AppService, OperationsService, UsersService, RandomOrgClient],
+  providers: [
+    AppService,
+    OperationsService,
+    UsersService,
+    RandomOrgClient,
+    {
+      provide: "APP_PIPE",
+      useClass: SchemaValidationPipe,
+    },
+  ],
 })
 export class AppModule {
   constructor() {

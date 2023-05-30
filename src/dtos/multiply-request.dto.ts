@@ -1,4 +1,4 @@
-import { IsNumber } from "class-validator";
+import { IsNumber, IsUUID } from "class-validator";
 
 export class MultiplyRequestDto {
   @IsNumber()
@@ -7,5 +7,6 @@ export class MultiplyRequestDto {
   @IsNumber()
   number2: number;
 
+  @IsUUID()
   userId: string;
 }
