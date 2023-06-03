@@ -17,6 +17,8 @@ import { config } from "dotenv";
 import { SchemaValidationPipe } from "./utils/schema-validation.pipe";
 import { HttpExceptionHandlerFilter } from "./utils/exception-handler.filter";
 import { EncryptionService } from "./utils/encryption.service";
+import JwtService from "./utils/jwt.service";
+import { JwtInterceptor } from "./utils/jwt-auth.interceptor";
 
 @Module({
   imports: [
@@ -45,6 +47,11 @@ import { EncryptionService } from "./utils/encryption.service";
     {
       provide: "APP_FILTER",
       useClass: HttpExceptionHandlerFilter,
+    },
+    JwtService,
+    {
+      provide: "APP_INTERCEPTOR",
+      useClass: JwtInterceptor,
     },
   ],
 })

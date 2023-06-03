@@ -16,4 +16,20 @@ export const environment = {
   user: {
     initialBalance: process.env.USER_INITIAL_BALANCE || 100,
   },
+  security: {
+    saltGenerator: process.env.SALT_GENERATOR,
+    encryptionAlgorithm: "aes256",
+    encryptionKey: process.env.ENCRYPTION_KEY,
+    encryptionIV: process.env.ENCRYPTION_IV || "",
+  },
+  jwt: {
+    privateKey: process.env.JWT_PRIVATE_KEY
+      ? Buffer.from(process.env.JWT_PRIVATE_KEY, "base64").toString("utf8")
+      : "",
+
+    publicKey: process.env.JWT_PUBLIC_KEY
+      ? Buffer.from(process.env.JWT_PUBLIC_KEY, "base64").toString("utf8")
+      : "",
+    issuer: "lp-poc",
+  },
 };

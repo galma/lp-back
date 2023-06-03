@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post, UsePipes } from "@nestjs/common";
 import { AddRequestDto } from "../../src/dtos/add-request.dto";
 import { DivideRequestDto } from "../../src/dtos/divide-request.dto";
 import { NumericOperationResponseDTO } from "../../src/dtos/numeric-operation-response.dto";
@@ -8,6 +8,7 @@ import { SquareRootRequestDto } from "../../src/dtos/square-root-request.dto";
 import { StringOperationResponseDTO } from "../../src/dtos/string-operation-response.dto";
 import { OperationsService } from "./operations.service";
 import { RandomStringRequestDto } from "../../src/dtos/random-string-request.dto";
+import { RequiresJwt } from "../../src/utils/jwt-auth.interceptor";
 
 @Controller("operations")
 export class OperationsController {
@@ -34,6 +35,7 @@ export class OperationsController {
     return result;
   }
 
+  @RequiresJwt()
   @Post("divide")
   async divide(
     @Body() dto: DivideRequestDto

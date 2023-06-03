@@ -11,6 +11,7 @@ import { InsertResult, Repository } from "typeorm";
 import { Record } from "../../src/entities/record.entity";
 import { ConfigService } from "@nestjs/config";
 import { EncryptionService } from "../../src/utils/encryption.service";
+import JwtService from "../../src/utils/jwt.service";
 
 @Injectable()
 export class UsersService {
@@ -22,7 +23,8 @@ export class UsersService {
     @InjectRepository(Record)
     private readonly recordsRepository: Repository<Record>,
     private readonly configService: ConfigService,
-    private readonly encryptionService: EncryptionService
+    private readonly encryptionService: EncryptionService,
+    private readonly jwtService: JwtService
   ) {
     this.initialBalance = this.configService.get<number>(
       "user.initialBalance"
@@ -41,9 +43,14 @@ export class UsersService {
       balance: this.initialBalance,
     });
 
+    const token = this.jwtService.signToken({
+      userId: result.identifiers[0].id,
+    });
+
     return {
       userId: result.identifiers[0].id,
       remainingBalance: this.initialBalance,
+      token: token,
     };
   }
 
@@ -65,9 +72,12 @@ export class UsersService {
       throw new UnauthorizedException();
     }
 
+    const token = this.jwtService.signToken({ userId: user.id });
+
     return {
       userId: user.id,
       remainingBalance: user.balance,
+      token,
     };
   }
 
