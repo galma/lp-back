@@ -48,9 +48,11 @@ export class UsersService {
     });
 
     return {
-      userId: result.identifiers[0].id,
-      remainingBalance: this.initialBalance,
-      token: token,
+      user: {
+        id: result.identifiers[0].id,
+        remainingBalance: this.initialBalance,
+      },
+      token,
     };
   }
 
@@ -75,9 +77,21 @@ export class UsersService {
     const token = this.jwtService.signToken({ userId: user.id });
 
     return {
-      userId: user.id,
-      remainingBalance: user.balance,
+      user: {
+        id: user.id,
+        remainingBalance: user.balance,
+      },
       token,
+    };
+  }
+
+  async getUserData(userId: string) {
+    const user = await this.usersRepository.findOneBy({ id: userId });
+    if (!user) throw new NotFoundException();
+
+    return {
+      id: user.id,
+      remainingBalance: user.balance,
     };
   }
 

@@ -1,5 +1,7 @@
 export class SignInResponseDTO {
-  remainingBalance: number;
-  userId: string;
+  user: {
+    remainingBalance: number;
+    id: string;
+  };
   token: string;
 }

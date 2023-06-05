@@ -13,12 +13,15 @@ import { RequiresJwt } from "../../src/utils/jwt-auth.interceptor";
 @Controller("operations")
 export class OperationsController {
   constructor(private readonly operationsService: OperationsService) {}
+
+  @RequiresJwt()
   @Post("add")
   async add(@Body() dto: AddRequestDto): Promise<NumericOperationResponseDTO> {
     const result = await this.operationsService.add(dto);
     return result;
   }
 
+  @RequiresJwt()
   @Post("subtract")
   async subtract(
     @Body() dto: SubtractRequestDto
@@ -27,6 +30,7 @@ export class OperationsController {
     return result;
   }
 
+  @RequiresJwt()
   @Post("multiply")
   async multiply(
     @Body() dto: MultiplyRequestDto
@@ -44,6 +48,7 @@ export class OperationsController {
     return result;
   }
 
+  @RequiresJwt()
   @Post("square-root")
   async squareRoot(
     @Body() dto: SquareRootRequestDto
@@ -52,6 +57,7 @@ export class OperationsController {
     return result;
   }
 
+  @RequiresJwt()
   @Post("random-string")
   async randomString(
     @Body() dto: RandomStringRequestDto

@@ -7,12 +7,16 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  Req,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { SignUpRequestDto } from "../../src/dtos/sign-up-request.dto";
 import { SignInResponseDTO } from "../../src/dtos/sign-in-response.dto";
 import { SignInRequestDto } from "../../src/dtos/sign-in-request.dto";
 import { GetUserRecordsResponseDTO } from "../../src/dtos/get-user-records-response.dto";
+import { MeResponseDTO } from "../../src/dtos/me-response.dto";
+import { RequiresJwt } from "../../src/utils/jwt-auth.interceptor";
 
 @Controller("users")
 export class UsersController {
@@ -30,6 +34,16 @@ export class UsersController {
   async signIn(@Body() dto: SignInRequestDto): Promise<SignInResponseDTO> {
     console.error("calling signin", dto);
     return await this.usersService.signIn(dto);
+  }
+
+  @Get("me")
+  @RequiresJwt()
+  async me(@Req() request: Request): Promise<MeResponseDTO> {
+    //@ts-ignore
+    const userId = request?.user;
+    if (!userId) throw new UnauthorizedException();
+
+    return await this.usersService.getUserData(userId);
   }
 
   @Get(":userId/records")

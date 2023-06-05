@@ -21,7 +21,10 @@ export class JwtInterceptor implements NestInterceptor {
     private readonly reflector: Reflector
   ) {}
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  async intercept(
+    context: ExecutionContext,
+    next: CallHandler
+  ): Promise<Observable<any>> {
     const requiresJwt = this.reflector.get<boolean>(
       REQUIRES_JWT,
       context.getHandler()
@@ -36,7 +39,7 @@ export class JwtInterceptor implements NestInterceptor {
     const token = this.extractToken(request.headers["authorization"]);
 
     try {
-      const decoded = this.jwtService.verifyToken(token);
+      const decoded = await this.jwtService.verifyToken(token);
       //@ts-ignore
       request.user = decoded.userId;
     } catch (error) {
