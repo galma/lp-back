@@ -8,7 +8,7 @@
     "strict": true,
     "noImplicitAny": false,
     "typeRoots": ["node_modules/@types"],
-    "types": ["node"],
+    "types": ["node", "jest"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "declaration": true,
@@ -18,20 +18,3 @@
   },
   "exclude": ["node_modules", "./src/datasource.ts", "./src/migrations/*.ts"]
 }
-// {
-//   "compilerOptions": {
-//     "module": "commonjs",
-//     "declaration": true,
-//     "noImplicitAny": false,
-//     "removeComments": true,
-//     "noLib": false,
-//     "allowSyntheticDefaultImports": true,
-//     "emitDecoratorMetadata": true,
-//     "experimentalDecorators": true,
-//     "target": "ES2018",
-//     "sourceMap": true,
-//     "outDir": "./dist",
-//     "baseUrl": "./"
-//   },
-//   "exclude": ["node_modules"]
-// }

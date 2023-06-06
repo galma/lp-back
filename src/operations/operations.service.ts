@@ -1,4 +1,5 @@
 import {
+  BadGatewayException,
   BadRequestException,
   ForbiddenException,
   Injectable,
@@ -18,6 +19,9 @@ import { StringOperationResponseDTO } from "../dtos/string-operation-response.dt
 import { RandomStringRequestDto } from "../dtos/random-string-request.dto";
 import { RandomOrgClient } from "../clients/random-org.client";
 import { LoggerService } from "../../src/utils/logger.service";
+import { NotEnoughBalanceError } from "../../src/errors/NotEnoughBalance";
+import { BadRequestError } from "../../src/errors/BadRequest";
+import { NotFoundError } from "../../src/errors/NotFound";
 
 @Injectable()
 export class OperationsService {
@@ -38,7 +42,7 @@ export class OperationsService {
     const operation = await this.getOperation(OperationType.Add);
 
     if (!(await this.isEnoughBalance(userId, operation.cost))) {
-      throw new ForbiddenException("not enough balance");
+      throw new NotEnoughBalanceError(userId);
     }
 
     const operationResult = number1 + number2;
@@ -65,7 +69,7 @@ export class OperationsService {
     const operation = await this.getOperation(OperationType.Subtract);
 
     if (!(await this.isEnoughBalance(userId, operation.cost))) {
-      throw new ForbiddenException("not enough balance");
+      throw new NotEnoughBalanceError(userId);
     }
 
     const operationResult = number1 - number2;
@@ -92,7 +96,7 @@ export class OperationsService {
     const operation = await this.getOperation(OperationType.Multiply);
 
     if (!(await this.isEnoughBalance(userId, operation.cost))) {
-      throw new ForbiddenException("not enough balance");
+      throw new NotEnoughBalanceError(userId);
     }
 
     const operationResult = number1 * number2;
@@ -116,12 +120,12 @@ export class OperationsService {
     number2,
     userId,
   }: DivideRequestDto): Promise<NumericOperationResponseDTO> {
-    if (number2 === 0) throw new BadRequestException();
+    if (number2 === 0) throw new BadRequestError();
 
     const operation = await this.getOperation(OperationType.Divide);
 
     if (!(await this.isEnoughBalance(userId, operation.cost))) {
-      throw new ForbiddenException("not enough balance");
+      throw new NotEnoughBalanceError(userId);
     }
 
     const operationResult = number1 / number2;
@@ -149,7 +153,7 @@ export class OperationsService {
     const operation = await this.getOperation(OperationType.Divide);
 
     if (!(await this.isEnoughBalance(userId, operation.cost))) {
-      throw new ForbiddenException("not enough balance");
+      throw new NotEnoughBalanceError(userId);
     }
 
     const operationResult = Math.sqrt(number1);
@@ -174,7 +178,7 @@ export class OperationsService {
     const operation = await this.getOperation(OperationType.RandomString);
 
     if (!(await this.isEnoughBalance(userId, operation.cost))) {
-      throw new ForbiddenException("not enough balance");
+      throw new NotEnoughBalanceError(userId);
     }
 
     const operationResult = await this.randomOrgClient.getRandomString();
@@ -206,7 +210,7 @@ export class OperationsService {
   async isEnoughBalance(userId: string, operationCost: number) {
     const user = await this.userRepository.findOneBy({ id: userId });
 
-    if (!user) throw new Error();
+    if (!user) throw new NotFoundError(`user ${userId} not found`);
 
     const userBalance = Number(user.balance);
 
@@ -234,7 +238,7 @@ export class OperationsService {
 
           const newBalance = Number(user.balance) - Number(operation.cost);
 
-          if (newBalance < 0) throw new Error("inssuficient balance");
+          if (newBalance < 0) throw new NotEnoughBalanceError(userId);
 
           await entityManager.update(
             User,
