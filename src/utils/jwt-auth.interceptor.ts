@@ -9,6 +9,8 @@ import { Observable } from "rxjs";
 import JwtService from "./jwt.service";
 import { SetMetadata } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
+import { UnauthorizedError } from "../../src/errors/Unauthorized";
+import { BadRequestError } from "../../src/errors/BadRequest";
 
 const REQUIRES_JWT = "requiresJwt";
 
@@ -19,9 +21,7 @@ export class JwtInterceptor implements NestInterceptor {
   constructor(
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector
-  ) {
-    console.log("JwtInterceptor");
-  }
+  ) {}
 
   async intercept(
     context: ExecutionContext,
@@ -46,7 +46,7 @@ export class JwtInterceptor implements NestInterceptor {
       //@ts-ignore
       request.user = decoded.userId;
     } catch (error) {
-      throw new BadRequestException("Invalid token");
+      throw new UnauthorizedError("Invalid token");
     }
 
     return next.handle();
@@ -54,13 +54,13 @@ export class JwtInterceptor implements NestInterceptor {
 
   extractToken(authorizationHeader: string): string {
     if (!authorizationHeader) {
-      throw new BadRequestException("No authorization header provided");
+      throw new BadRequestError("No authorization header provided");
     }
 
     const [scheme, token] = authorizationHeader.split(" ");
 
     if (scheme !== "Bearer" || !token) {
-      throw new BadRequestException("Invalid authorization header format");
+      throw new BadRequestError("Invalid authorization header format");
     }
 
     return token;

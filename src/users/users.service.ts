@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { SignInResponseDTO } from "../../src/dtos/sign-in-response.dto";
 import { SignUpRequestDto } from "src/dtos/sign-up-request.dto";
@@ -12,6 +8,9 @@ import { Record } from "../../src/entities/record.entity";
 import { ConfigService } from "@nestjs/config";
 import { EncryptionService } from "../../src/utils/encryption.service";
 import JwtService from "../../src/utils/jwt.service";
+import { LoggerService } from "../../src/utils/logger.service";
+import { UnauthorizedError } from "../../src/errors/Unauthorized";
+import { NotFoundError } from "../../src/errors/NotFound";
 
 @Injectable()
 export class UsersService {
@@ -24,7 +23,8 @@ export class UsersService {
     private readonly recordsRepository: Repository<Record>,
     private readonly configService: ConfigService,
     private readonly encryptionService: EncryptionService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly logger: LoggerService
   ) {
     this.initialBalance = this.configService.get<number>(
       "user.initialBalance"
@@ -35,8 +35,6 @@ export class UsersService {
     email,
     password,
   }: SignUpRequestDto): Promise<SignInResponseDTO> {
-    console.log("calling signup service");
-
     const result: InsertResult = await this.usersRepository.insert({
       email,
       password: await this.encryptionService.hashPassword(password),
@@ -46,6 +44,10 @@ export class UsersService {
     const token = this.jwtService.signToken({
       userId: result.identifiers[0].id,
     });
+
+    this.logger.info(
+      `user with id ${result.identifiers[0].id} has been created for ${email}`
+    );
 
     return {
       user: {
@@ -60,18 +62,16 @@ export class UsersService {
     email,
     password,
   }: SignUpRequestDto): Promise<SignInResponseDTO> {
-    console.log("calling signin service");
-
     const user = await this.usersRepository.findOneBy({ email });
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedError();
     }
 
     if (
       !(await this.encryptionService.passwordMatch(password, user.password))
     ) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedError();
     }
 
     const token = this.jwtService.signToken({ userId: user.id });
@@ -87,7 +87,7 @@ export class UsersService {
 
   async getUserData(userId: string) {
     const user = await this.usersRepository.findOneBy({ id: userId });
-    if (!user) throw new NotFoundException();
+    if (!user) throw new NotFoundError();
 
     return {
       id: user.id,
@@ -108,7 +108,7 @@ export class UsersService {
   }> {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
 
-    if (!user) throw new NotFoundException();
+    if (!user) throw new NotFoundError();
 
     const [records, total] = await this.recordsRepository.findAndCount({
       where: { user: { id: userId } },

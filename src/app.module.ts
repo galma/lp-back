@@ -19,6 +19,7 @@ import { HttpExceptionHandlerFilter } from "./utils/exception-handler.filter";
 import { EncryptionService } from "./utils/encryption.service";
 import JwtService from "./utils/jwt.service";
 import { JwtInterceptor } from "./utils/jwt-auth.interceptor";
+import { LoggerService } from "./utils/logger.service";
 
 @Module({
   imports: [
@@ -55,13 +56,13 @@ import { JwtInterceptor } from "./utils/jwt-auth.interceptor";
       provide: "APP_INTERCEPTOR",
       useClass: JwtInterceptor,
     },
+    LoggerService,
   ],
 })
 export class AppModule {
   constructor() {
     try {
-      console.log(config());
+      config();
     } catch {}
-    console.error("creating AppModule");
   }
 }

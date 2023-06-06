@@ -35,7 +35,6 @@ async function bootstrapServer(): Promise<Server> {
 }
 
 export const handler: Handler = async (event: any, context: Context) => {
-  console.log(event);
   cachedServer = await bootstrapServer();
   return proxy(cachedServer, event, context, "PROMISE").promise;
 };

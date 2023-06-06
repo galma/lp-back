@@ -17,6 +17,7 @@ import { SquareRootRequestDto } from "../dtos/square-root-request.dto";
 import { StringOperationResponseDTO } from "../dtos/string-operation-response.dto";
 import { RandomStringRequestDto } from "../dtos/random-string-request.dto";
 import { RandomOrgClient } from "../clients/random-org.client";
+import { LoggerService } from "../../src/utils/logger.service";
 
 @Injectable()
 export class OperationsService {
@@ -25,7 +26,8 @@ export class OperationsService {
     private operationsRepository: Repository<Operation>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private readonly randomOrgClient: RandomOrgClient
+    private readonly randomOrgClient: RandomOrgClient,
+    private readonly logger: LoggerService
   ) {}
 
   async add({
@@ -208,7 +210,9 @@ export class OperationsService {
 
     const userBalance = Number(user.balance);
 
-    return userBalance >= Number(operationCost);
+    const result = userBalance >= Number(operationCost);
+
+    return result;
   }
 
   async saveOperation(
@@ -216,35 +220,47 @@ export class OperationsService {
     operation: Operation,
     operationResult: string | number
   ): Promise<number> {
-    const newBalance = await this.operationsRepository.manager.connection.transaction(
-      "SERIALIZABLE", //ensure highest level of transaction isolation
-      async (entityManager) => {
-        const user = await entityManager.findOneBy(User, { id: userId });
+    try {
+      const newBalance = await this.operationsRepository.manager.connection.transaction(
+        "SERIALIZABLE", //ensure highest level of transaction isolation
+        async (entityManager) => {
+          const user = await entityManager.findOneBy(User, { id: userId });
 
-        if (!user) throw new Error("invalid user");
+          if (!user) throw new Error("invalid user");
 
-        const newBalance = Number(user.balance) - Number(operation.cost);
+          this.logger.info(
+            `user ${userId} is trying to submit a ${operation.type} operation. Current balance: ${user.balance}. Operation cost: ${operation.cost} `
+          );
 
-        if (newBalance < 0) throw new Error("inssuficient balance");
+          const newBalance = Number(user.balance) - Number(operation.cost);
 
-        await entityManager.update(
-          User,
-          { id: userId },
-          { balance: newBalance }
-        );
+          if (newBalance < 0) throw new Error("inssuficient balance");
 
-        await entityManager.insert(Record, {
-          operation: { id: operation.id },
-          userBalance: user.balance,
-          amount: operation.cost,
-          operationResponse: operationResult as string,
-          user: { id: user.id },
-        });
+          await entityManager.update(
+            User,
+            { id: userId },
+            { balance: newBalance }
+          );
 
-        return newBalance;
-      }
-    );
+          await entityManager.insert(Record, {
+            operation: { id: operation.id },
+            userBalance: user.balance,
+            amount: operation.cost,
+            operationResponse: operationResult as string,
+            user: { id: user.id },
+          });
 
-    return newBalance;
+          return newBalance;
+        }
+      );
+
+      return newBalance;
+    } catch (error) {
+      this.logger.error(
+        `saveOperation for user ${userId} operation ${operation} failed.`,
+        error
+      );
+      throw error;
+    }
   }
 }

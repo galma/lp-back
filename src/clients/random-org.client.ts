@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
 import { firstValueFrom } from "rxjs";
 import { ConfigService } from "@nestjs/config";
+import { LoggerService } from "../../src/utils/logger.service";
+import { AppError } from "../../src/errors/AppError";
 
 @Injectable()
 export class RandomOrgClient {
@@ -10,11 +12,10 @@ export class RandomOrgClient {
 
   constructor(
     private readonly httpService: HttpService,
-    private configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly logger: LoggerService
   ) {
-    console.log("RandomOrgClient");
     this.apiKey = this.configService.get<string>("randomOrgApi.apiKey");
-    console.log("RandomOrgClient initialized");
   }
 
   async getRandomString(): Promise<string> {
@@ -37,13 +38,15 @@ export class RandomOrgClient {
       const result = await firstValueFrom(response);
 
       if (result.data?.error) {
-        console.log(JSON.stringify(result.data?.error));
-        throw new Error();
+        this.logger.error(
+          "error response from random.org api",
+          result.data?.error
+        );
+        throw new AppError("third party not working", 500);
       }
-
       return result.data.result?.random?.data[0] || null;
     } catch (error) {
-      console.log(JSON.stringify(error));
+      this.logger.error("error in getRandomString", error);
       throw error;
     }
   }
