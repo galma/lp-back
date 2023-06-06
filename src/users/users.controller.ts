@@ -46,7 +46,9 @@ export class UsersController {
     return await this.usersService.getUserData(userId);
   }
 
+  @RequiresJwt()
   @Get(":userId/records")
+  @RequiresJwt()
   async getUserRecords(
     @Param("userId") userId: string,
     @Query("page", new DefaultValuePipe(1), ParseIntPipe) page: number,

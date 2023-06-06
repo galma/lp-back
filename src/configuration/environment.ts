@@ -1,6 +1,8 @@
 import { config } from "dotenv";
 
-config();
+try {
+  config();
+} catch {}
 
 export const environment = {
   database: {

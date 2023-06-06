@@ -1,4 +1,4 @@
-import { hash, compare } from "bcrypt";
+import { hash, compare } from "bcryptjs";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import * as crypto from "crypto";
@@ -10,6 +10,7 @@ export class EncryptionService {
   private iv: Buffer | string | null;
 
   constructor(private readonly configService: ConfigService) {
+    console.log("EncryptionService");
     this.algorithm = this.configService.get("security.encryptionAlgorithm");
     if (!this.algorithm) throw new Error("encryptionAlgorithm undefined");
     const encryptionKey = this.configService.get("security.encryptionKey");
@@ -30,6 +31,8 @@ export class EncryptionService {
     if (!this.algorithm && !this.key) {
       throw Error("Configuration Error!");
     }
+
+    console.log("EncryptionService initialized");
   }
 
   async hashPassword(password: string): Promise<string> {

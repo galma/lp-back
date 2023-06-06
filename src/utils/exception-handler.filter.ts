@@ -15,6 +15,7 @@ import { AppError } from "../../src/errors/AppError";
 export class HttpExceptionHandlerFilter implements ExceptionFilter {
   // constructor(@Logger('ExceptionHandler') private logger: LoggerSrv) {}
   catch(exception: Error, host: ArgumentsHost) {
+    console.error(exception);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest();
@@ -44,6 +45,8 @@ export class HttpExceptionHandlerFilter implements ExceptionFilter {
           HttpStatus.INTERNAL_SERVER_ERROR,
           exception.stack
         );
+
+        console.log("UnhandledError", exception);
         // this.logger.error("UnhandledError", [exception], {
         //   url: request.url,
         //   query: request.query,

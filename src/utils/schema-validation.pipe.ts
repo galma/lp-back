@@ -11,6 +11,7 @@ import {
 @Injectable()
 export class SchemaValidationPipe implements PipeTransform<any> {
   async transform(value: any, { metatype }: ArgumentMetadata) {
+    console.log("pipe");
     if (!metatype || !this.validateMetaType(metatype)) {
       return value;
     }

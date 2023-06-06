@@ -19,12 +19,15 @@ export class JwtInterceptor implements NestInterceptor {
   constructor(
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector
-  ) {}
+  ) {
+    console.log("JwtInterceptor");
+  }
 
   async intercept(
     context: ExecutionContext,
     next: CallHandler
   ): Promise<Observable<any>> {
+    console.log("intercept");
     const requiresJwt = this.reflector.get<boolean>(
       REQUIRES_JWT,
       context.getHandler()

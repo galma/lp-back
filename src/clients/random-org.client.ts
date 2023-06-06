@@ -12,7 +12,9 @@ export class RandomOrgClient {
     private readonly httpService: HttpService,
     private configService: ConfigService
   ) {
+    console.log("RandomOrgClient");
     this.apiKey = this.configService.get<string>("randomOrgApi.apiKey");
+    console.log("RandomOrgClient initialized");
   }
 
   async getRandomString(): Promise<string> {
@@ -31,12 +33,18 @@ export class RandomOrgClient {
       }
     );
 
-    const result = await firstValueFrom(response);
+    try {
+      const result = await firstValueFrom(response);
 
-    if (result.data?.error) {
-      throw new Error();
+      if (result.data?.error) {
+        console.log(JSON.stringify(result.data?.error));
+        throw new Error();
+      }
+
+      return result.data.result?.random?.data[0] || null;
+    } catch (error) {
+      console.log(JSON.stringify(error));
+      throw error;
     }
-
-    return result.data.result?.random?.data[0] || null;
   }
 }

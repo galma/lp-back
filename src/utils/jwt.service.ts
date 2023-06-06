@@ -16,6 +16,7 @@ export default class JwtService {
     this.issuer = this.configService.get("jwt.issuer");
     this.privateKey = this.configService.get("jwt.privateKey");
     this.publicKey = this.configService.get("jwt.publicKey");
+    console.log("JwtService initialized");
   }
 
   signToken(tokenData: { userId: string }, encrypt = true) {

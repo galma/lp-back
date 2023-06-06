@@ -27,6 +27,8 @@ import { JwtInterceptor } from "./utils/jwt-auth.interceptor";
     TypeOrmModule.forRoot({
       type: "postgres",
       entities: [User, Operation, Record],
+      logging: true,
+      logger: "debug",
       synchronize: false,
       ...environment.database,
     }),
@@ -57,7 +59,9 @@ import { JwtInterceptor } from "./utils/jwt-auth.interceptor";
 })
 export class AppModule {
   constructor() {
-    console.log(config());
+    try {
+      console.log(config());
+    } catch {}
     console.error("creating AppModule");
   }
 }
