@@ -25,8 +25,11 @@ async function bootstrapServer(): Promise<Server> {
       AppModule,
       new ExpressAdapter(expressApp)
     );
-    //dev
-    nestApp.enableCors();
+
+    if (process.env.ENVIRONMENT === "local") {
+      console.log("cors enabled");
+      nestApp.enableCors();
+    }
     nestApp.use(eventContext());
     await nestApp.init();
     cachedServer = createServer(expressApp, undefined, binaryMimeTypes);

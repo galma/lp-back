@@ -5,7 +5,11 @@ import { config } from "dotenv";
 async function bootstrap() {
   config();
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  if (process.env.ENVIRONMENT === "local") {
+    app.enableCors();
+    console.log("cors enabled");
+  }
+
   await app.listen(3000);
 }
 bootstrap();
