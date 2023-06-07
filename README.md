@@ -92,6 +92,14 @@ The following environment variable is required:
 
 Live version of the API is published in AWS using the serverless deploy (api gateway + lambdas). API URL: https://y1ibcj2a6l.execute-api.us-east-1.amazonaws.com/dev/v1
 
+## Test suite
+
+Run the project tests with the following command:
+
+```
+npm run test
+```
+
 ## Improvements
 
 - Include Swagger documentation. (Postman collection LP.postman_collection.json is included in the root folder)

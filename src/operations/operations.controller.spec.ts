@@ -15,6 +15,7 @@ import { User } from "../../src/entities/user.entity";
 import { Operation } from "../../src/entities/operation.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { RandomOrgClient } from "../../src/clients/random-org.client";
+import { createMocks } from "node-mocks-http";
 
 export type MockType<T> = {
   [P in keyof T]?: jest.Mock<{}>;
@@ -58,6 +59,9 @@ describe("OperationsController", () => {
 
   describe("add", () => {
     it("should call operationsService.add and return the result", async () => {
+      const user = "0b48cba5-3638-4664-ae67-e0392b901821";
+      const mocks = createMocks();
+      mocks.req.user = user;
       const expectedResult = new NumericOperationResponseDTO();
       expectedResult.remainingBalance = 5;
       expectedResult.result = 3;
@@ -65,11 +69,13 @@ describe("OperationsController", () => {
       const dto = new AddRequestDto();
       dto.number1 = 1;
       dto.number2 = 2;
+      dto.userId = user;
       jest
         .spyOn(service, "add")
         .mockResolvedValue(Promise.resolve(expectedResult));
 
-      const result = await controller.add(dto);
+      //@ts-ignore
+      const result = await controller.add(mocks.req, dto);
 
       expect(service.add).toHaveBeenCalledWith(dto);
       expect(result).toBe(expectedResult);

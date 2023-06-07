@@ -61,12 +61,12 @@ describe("OperationsService", () => {
   describe("divide", () => {
     it("should perform divide operation with non 0 number 2 value and finish successfully", async () => {
       const expectedResult = new NumericOperationResponseDTO();
-      expectedResult.remainingBalance = 1; //results doesn't matter
-      expectedResult.result = 1; //results doesn't matter
+      expectedResult.remainingBalance = 2;
+      expectedResult.result = 2;
 
       const dto = new DivideRequestDto();
       dto.number1 = 4;
-      dto.number2 = 3;
+      dto.number2 = 2;
 
       const divideOperation = new Operation();
       divideOperation.cost = 10;
@@ -87,6 +87,8 @@ describe("OperationsService", () => {
         Promise.resolve(mockedUser)
       );
 
+      jest.spyOn(service, "divide");
+
       jest
         .spyOn(service, "saveOperation")
         .mockResolvedValue(Promise.resolve(2));
@@ -94,7 +96,7 @@ describe("OperationsService", () => {
       const result = await service.divide(dto);
 
       expect(service.divide).toHaveBeenCalledWith(dto);
-      expect(result).toBe(expectedResult);
+      expect(result).toEqual(expectedResult);
     });
 
     it("should fails if number 2 value is 0", async () => {
