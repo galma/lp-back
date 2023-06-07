@@ -7,6 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   if (process.env.ENVIRONMENT === "local") {
     app.enableCors();
+    app.setGlobalPrefix("v1");
     console.log("cors enabled");
   }
 

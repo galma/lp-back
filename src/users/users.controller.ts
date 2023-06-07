@@ -8,7 +8,6 @@ import {
   Post,
   Query,
   Req,
-  UnauthorizedException,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { SignUpRequestDto } from "../../src/dtos/sign-up-request.dto";
@@ -17,22 +16,19 @@ import { SignInRequestDto } from "../../src/dtos/sign-in-request.dto";
 import { GetUserRecordsResponseDTO } from "../../src/dtos/get-user-records-response.dto";
 import { MeResponseDTO } from "../../src/dtos/me-response.dto";
 import { RequiresJwt } from "../../src/utils/jwt-auth.interceptor";
+import { UnauthorizedError } from "../../src/errors/Unauthorized";
 
 @Controller("users")
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {
-    console.error("calling signup");
-  }
+  constructor(private readonly usersService: UsersService) {}
 
   @Post("sign-up")
   async signUp(@Body() dto: SignUpRequestDto): Promise<SignInResponseDTO> {
-    console.error("calling signup", dto);
     return await this.usersService.signUp(dto);
   }
 
   @Post("sign-in")
   async signIn(@Body() dto: SignInRequestDto): Promise<SignInResponseDTO> {
-    console.error("calling signin", dto);
     return await this.usersService.signIn(dto);
   }
 
@@ -41,7 +37,7 @@ export class UsersController {
   async me(@Req() request: Request): Promise<MeResponseDTO> {
     //@ts-ignore
     const userId = request?.user;
-    if (!userId) throw new UnauthorizedException();
+    if (!userId) throw new UnauthorizedError();
 
     return await this.usersService.getUserData(userId);
   }

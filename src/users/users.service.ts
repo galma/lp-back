@@ -11,6 +11,9 @@ import JwtService from "../../src/utils/jwt.service";
 import { LoggerService } from "../../src/utils/logger.service";
 import { UnauthorizedError } from "../../src/errors/Unauthorized";
 import { NotFoundError } from "../../src/errors/NotFound";
+import { BadRequestError } from "../../src/errors/BadRequest";
+import { UserAlreadyExistsError } from "../../src/errors/UserAlreadyExists";
+import { InvalidCredentialsError } from "../../src/errors/InvalidCredentials";
 
 @Injectable()
 export class UsersService {
@@ -35,6 +38,9 @@ export class UsersService {
     email,
     password,
   }: SignUpRequestDto): Promise<SignInResponseDTO> {
+    const user = await this.usersRepository.findOneBy({ email });
+    if (user) throw new UserAlreadyExistsError("user already exists");
+
     const result: InsertResult = await this.usersRepository.insert({
       email,
       password: await this.encryptionService.hashPassword(password),
@@ -65,13 +71,13 @@ export class UsersService {
     const user = await this.usersRepository.findOneBy({ email });
 
     if (!user) {
-      throw new UnauthorizedError();
+      throw new InvalidCredentialsError();
     }
 
     if (
       !(await this.encryptionService.passwordMatch(password, user.password))
     ) {
-      throw new UnauthorizedError();
+      throw new InvalidCredentialsError();
     }
 
     const token = this.jwtService.signToken({ userId: user.id });

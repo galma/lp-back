@@ -26,6 +26,8 @@ async function bootstrapServer(): Promise<Server> {
       new ExpressAdapter(expressApp)
     );
 
+    nestApp.setGlobalPrefix("v1");
+
     if (process.env.ENVIRONMENT === "local") {
       console.log("cors enabled");
       nestApp.enableCors();
