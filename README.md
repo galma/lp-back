@@ -82,6 +82,10 @@ The following environment variable is required:
 - `JWT_PRIVATE_KEY`: Private key used to generate jwt. It must be a private key using RSA256 and encoded in base64
 - `JWT_PUBLIC_KEY`: Public key used to read jwt. It must be a private key using RSA256 and encoded in base64
 
+## Live Version
+
+Live version of the API is published in AWS using the serverless deploy (api gateway + lambdas). API URL: https://y1ibcj2a6l.execute-api.us-east-1.amazonaws.com/dev/v1
+
 ## Improvements
 
 - Include Swagger documentation. (Postman collection is included)
