@@ -21,7 +21,6 @@ export const environment = {
     initialBalance: process.env.USER_INITIAL_BALANCE || 100,
   },
   security: {
-    saltGenerator: process.env.SALT_GENERATOR,
     encryptionAlgorithm: "aes256",
     encryptionKey: process.env.ENCRYPTION_KEY,
     encryptionIV: process.env.ENCRYPTION_IV || "",

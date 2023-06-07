@@ -2,16 +2,8 @@ service: lp-back
 
 plugins:
   - serverless-plugin-typescript
-  # - serverless-plugin-optimize
   - serverless-offline
-  # - serverless-bundle
   - serverless-plugin-common-excludes
-  # - serverless-plugin-include-dependencies
-
-# custom:
-#   # Enable warmup on all functions (only for production and staging)
-#   warmup:
-#       enabled: true
 
 provider:
   name: aws
@@ -20,17 +12,10 @@ provider:
 package:
   individually: true
   excludeDevDependencies: true
-  # patterns:
-  #   - '!node_modules/**'
-  # include:
-  #   - src/dtos/*
-# custom:
-#   includeDependencies:
-#     forceInclude:
-#       - utf-8-validate
+
 functions:
-  main: # The name of the lambda function
-    handler: src/lambda.handler # The module 'handler' is exported in the file 'src/lambda'
+  main:
+    handler: src/lambda.handler
     timeout: 29
     events:
       - http:
