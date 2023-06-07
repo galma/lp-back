@@ -1,4 +1,4 @@
-# Project Name
+# LP-BACK
 
 This is a README.md file for the project LP-BACK. It provides instructions on how to set up and run the project locally.
 
@@ -18,6 +18,12 @@ Before you begin, make sure you have the following installed on your machine:
 
 - PostgreSQL instance
 - Node.js and npm
+
+A postgre instance can be created using Docker as follows:
+
+```
+docker run -e POSTGRES_PASSWORD=supersecret -e POSTGRES_USER=postgres -e POSTGRES_DB=test -p5432:5432 postgres
+```
 
 ## Installation
 
@@ -39,7 +45,7 @@ Configure the environment variables by following these steps:
 To execute the migrations and create the necessary database tables, run the following command:
 
 ```
-npm run typeorm migration:run -- -d ./src/datasource.ts
+npm run migration:run
 ```
 
 ## Running the Project
@@ -64,7 +70,7 @@ Once Serverless is installed, run the project with the following command:
 sls offline
 ```
 
-Please note that the URLs may differ depending on the chosen method of execution.
+Please note that the base URLs may differ depending on the chosen method of execution. (/v1 for traditional npm run and /dev/v1 for serverless)
 
 ## Environment Variables
 
@@ -88,5 +94,5 @@ Live version of the API is published in AWS using the serverless deploy (api gat
 
 ## Improvements
 
-- Include Swagger documentation. (Postman collection is included)
+- Include Swagger documentation. (Postman collection LP.postman_collection.json is included in the root folder)
 - Return DTOs instead of entities in all responses to adhere to best practices.

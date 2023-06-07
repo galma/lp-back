@@ -9,11 +9,12 @@ import {
 import * as httpStatus from "http-status";
 import { SchemaValidationError } from "../../src/errors/SchemaValidationFailed";
 import { AppError } from "../../src/errors/AppError";
+import { LoggerService } from "./logger.service";
 
 @Injectable()
 @Catch()
 export class HttpExceptionHandlerFilter implements ExceptionFilter {
-  // constructor(@Logger('ExceptionHandler') private logger: LoggerSrv) {}
+  constructor(private readonly logger: LoggerService) {}
   catch(exception: Error, host: ArgumentsHost) {
     console.error(exception);
     const ctx = host.switchToHttp();
@@ -46,11 +47,7 @@ export class HttpExceptionHandlerFilter implements ExceptionFilter {
           exception.stack
         );
 
-        console.log("UnhandledError", exception);
-        // this.logger.error("UnhandledError", [exception], {
-        //   url: request.url,
-        //   query: request.query,
-        // });
+        this.logger.error("UnhandledError", [exception]);
       }
     } else {
       error = exception as AppError;

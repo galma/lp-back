@@ -46,10 +46,14 @@ export class UsersController {
   @Get(":userId/records")
   @RequiresJwt()
   async getUserRecords(
+    @Req() request: Request,
     @Param("userId") userId: string,
     @Query("page", new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query("limit", new DefaultValuePipe(10), ParseIntPipe) limit: number
   ): Promise<GetUserRecordsResponseDTO> {
+    //@ts-ignore
+    this.usersService.assertUserPermissions(userId, request?.user);
+
     const {
       records,
       total,

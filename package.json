@@ -8,7 +8,8 @@
     "start": "ts-node src/main",
     "prestart:prod": "npm run build",
     "start:prod": "node dist/main.js",
-    "typeorm": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./tools/typeorm.custom-cli.ts"
+    "typeorm": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./tools/typeorm.custom-cli.ts",
+    "migration:run": "npm run typeorm migration:run -- -d ./src/datasource.ts"
   },
   "dependencies": {
     "@nestjs/axios": "^2.0.0",

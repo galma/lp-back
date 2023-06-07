@@ -1,0 +1,386 @@
+{
+	"info": {
+		"_postman_id": "3feadf1b-1d3c-44aa-9915-62cea643fb11",
+		"name": "LP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3055812",
+		"_collection_link": "https://crimson-equinox-993911.postman.co/workspace/ASI~ec08918d-4bb1-4309-ac2a-41b8da271988/collection/3055812-3feadf1b-1d3c-44aa-9915-62cea643fb11?action=share&creator=3055812&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "sign up",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"b@b.com\",\r\n    \"password\": \"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiUrl}}/users/sign-up",
+					"host": [
+						"{{apiUrl}}"
+					],
+					"path": [
+						"users",
+						"sign-up"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sign in",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"b@b.com\",\r\n    \"password\": \"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiUrl}}/users/sign-in",
+					"host": [
+						"{{apiUrl}}"
+					],
+					"path": [
+						"users",
+						"sign-in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Operation Random String",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{    \r\n    \"userId\": \"{{userId}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiUrl}}/operations/random-string",
+					"host": [
+						"{{apiUrl}}"
+					],
+					"path": [
+						"operations",
+						"random-string"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Operation Add",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{    \r\n    \"userId\": \"{{userId}}\",\r\n    \"number1\": 10,\r\n    \"number2\": 20\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiUrl}}/operations/add",
+					"host": [
+						"{{apiUrl}}"
+					],
+					"path": [
+						"operations",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Operation Subtract",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{    \r\n    \"userId\": \"{{userId}}\",\r\n    \"number1\": 10,\r\n    \"number2\": 20\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiUrl}}/operations/subtract",
+					"host": [
+						"{{apiUrl}}"
+					],
+					"path": [
+						"operations",
+						"subtract"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Operation Multiply",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{    \r\n    \"userId\": \"{{userId}}\",\r\n    \"number1\": 10,\r\n    \"number2\": 20\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiUrl}}/operations/multiply",
+					"host": [
+						"{{apiUrl}}"
+					],
+					"path": [
+						"operations",
+						"multiply"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Operation Divide",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{    \r\n    \"userId\": \"{{userId}}\",\r\n    \"number1\": 10,\r\n    \"number2\": 20\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiUrl}}/operations/divide",
+					"host": [
+						"{{apiUrl}}"
+					],
+					"path": [
+						"operations",
+						"divide"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Operation Square Root",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{    \r\n    \"userId\": \"{{userId}}\",\r\n    \"number1\": 10    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiUrl}}/operations/square-root",
+					"host": [
+						"{{apiUrl}}"
+					],
+					"path": [
+						"operations",
+						"square-root"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Records",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apiUrl}}/users/{{userId}}/records?page=1&limit=10",
+					"host": [
+						"{{apiUrl}}"
+					],
+					"path": [
+						"users",
+						"{{userId}}",
+						"records"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0MDcwZThmZC0xNTMyLTQ2NTYtODdjMi02YTgyMTU4ZTc1ZDkiLCJpYXQiOjE2ODU3ODkxNTIsImV4cCI6MTY4NTc5Mjc1MiwiYXVkIjoiYXVkaWVuY2UiLCJpc3MiOiJscC1wb2MifQ.P41b5mpu7_svkAygjaHU2SaplGK8hjUECNau2hhI3MUOmwjcrppHNyGdS9CSBrQhrio2ks1irGqTcCtYICeBB3B-xiF40lXNuFUCVGn4iIyvDr8Vg1R_2GKsbCthj7w1bmao-UJUJFcztEeR5vPOinkzfhyJkpg1sI6YAWCYPeRAntZA3X1tFA0uW3t2vSt6sbAecoBUaJmB7L_NRL5PDmIROLh35AH8ISET3jFkhFbv82IVPts1MojpfcW4KLTil5KegDUpdaIxaHUesWJ0fMLiRBCXRQz3QqkfQwNOic7-UPCPu_5a2MnMOexP1eEkc9f8Gmnn0oQ3EtpypAURxg"
+		},
+		{
+			"key": "apiUrl",
+			"value": "https://y1ibcj2a6l.execute-api.us-east-1.amazonaws.com/dev/v1",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "0e8e5853-0fb9-46c9-9035-054ec24db1e5",
+			"type": "string"
+		}
+	]
+}

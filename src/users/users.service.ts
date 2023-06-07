@@ -9,11 +9,10 @@ import { ConfigService } from "@nestjs/config";
 import { EncryptionService } from "../../src/utils/encryption.service";
 import JwtService from "../../src/utils/jwt.service";
 import { LoggerService } from "../../src/utils/logger.service";
-import { UnauthorizedError } from "../../src/errors/Unauthorized";
 import { NotFoundError } from "../../src/errors/NotFound";
-import { BadRequestError } from "../../src/errors/BadRequest";
 import { UserAlreadyExistsError } from "../../src/errors/UserAlreadyExists";
 import { InvalidCredentialsError } from "../../src/errors/InvalidCredentials";
+import { ForbiddenError } from "../../src/errors/Forbidden";
 
 @Injectable()
 export class UsersService {
@@ -133,5 +132,14 @@ export class UsersService {
       previousPage,
       nextPage,
     };
+  }
+
+  assertUserPermissions(accessedUserId, requestUser) {
+    if (accessedUserId !== requestUser) {
+      this.logger.warn(
+        `User ${requestUser} is trying to access or perform operations for ${accessedUserId} user. Access denied.`
+      );
+      throw new ForbiddenError();
+    }
   }
 }
