@@ -32,4 +32,7 @@ export class Record {
 
   @Column({ type: "timestamptz", default: () => "NOW()" })
   date: Date;
+
+  @Column({ nullable: true })
+  deleted: boolean;
 }

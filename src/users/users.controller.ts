@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   DefaultValuePipe,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -69,5 +70,21 @@ export class UsersController {
       previousPage,
       nextPage,
     };
+  }
+
+  @RequiresJwt()
+  @Delete(":userId/records/:recordId")
+  @RequiresJwt()
+  async deleteUserRecord(
+    @Req() request: Request,
+    @Param("userId") userId: string,
+    @Param("recordId") recordId: string
+  ): Promise<GetUserRecordsResponseDTO> {
+    //@ts-ignore
+    this.usersService.assertUserPermissions(userId, request?.user);
+
+    await this.usersService.deleteUserRecord(userId, recordId);
+
+    return;
   }
 }

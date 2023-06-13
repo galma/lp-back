@@ -252,6 +252,7 @@ export class OperationsService {
             amount: operation.cost,
             operationResponse: operationResult as string,
             user: { id: user.id },
+            deleted: false,
           });
 
           return newBalance;

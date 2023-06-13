@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { SignInResponseDTO } from "../../src/dtos/sign-in-response.dto";
 import { SignUpRequestDto } from "src/dtos/sign-up-request.dto";
 import { User } from "../../src/entities/user.entity";
-import { InsertResult, Repository } from "typeorm";
+import { EntityNotFoundError, InsertResult, Repository } from "typeorm";
 import { Record } from "../../src/entities/record.entity";
 import { ConfigService } from "@nestjs/config";
 import { EncryptionService } from "../../src/utils/encryption.service";
@@ -116,7 +116,7 @@ export class UsersService {
     if (!user) throw new NotFoundError();
 
     const [records, total] = await this.recordsRepository.findAndCount({
-      where: { user: { id: userId } },
+      where: { user: { id: userId }, deleted: false },
       skip: (page - 1) * limit,
       take: limit,
     });
@@ -132,6 +132,21 @@ export class UsersService {
       previousPage,
       nextPage,
     };
+  }
+
+  async deleteUserRecord(userId: string, recordId: string) {
+    try {
+      const record = await this.recordsRepository.findOneOrFail({
+        where: { id: recordId, user: { id: userId }, deleted: false },
+      });
+      record.deleted = true;
+      await this.recordsRepository.save(record);
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        throw new NotFoundError("Record not found");
+      }
+      throw error;
+    }
   }
 
   assertUserPermissions(accessedUserId, requestUser) {
