@@ -50,7 +50,8 @@ export class UsersController {
     @Req() request: Request,
     @Param("userId") userId: string,
     @Query("page", new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query("limit", new DefaultValuePipe(10), ParseIntPipe) limit: number
+    @Query("limit", new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query("orderby", new DefaultValuePipe(null)) rawOrderBy: string
   ): Promise<GetUserRecordsResponseDTO> {
     //@ts-ignore
     this.usersService.assertUserPermissions(userId, request?.user);
@@ -61,7 +62,7 @@ export class UsersController {
       totalPages,
       previousPage,
       nextPage,
-    } = await this.usersService.getUserRecords(userId, page, limit);
+    } = await this.usersService.getUserRecords(userId, page, limit, rawOrderBy);
     return {
       //@ts-ignore
       records,

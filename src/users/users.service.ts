@@ -13,6 +13,7 @@ import { NotFoundError } from "../../src/errors/NotFound";
 import { UserAlreadyExistsError } from "../../src/errors/UserAlreadyExists";
 import { InvalidCredentialsError } from "../../src/errors/InvalidCredentials";
 import { ForbiddenError } from "../../src/errors/Forbidden";
+import { BadRequestError } from "../../src/errors/BadRequest";
 
 @Injectable()
 export class UsersService {
@@ -103,7 +104,8 @@ export class UsersService {
   async getUserRecords(
     userId: string,
     page: number,
-    limit: number
+    limit: number,
+    rawOrderBy: string
   ): Promise<{
     records: Record[];
     total: number;
@@ -113,12 +115,15 @@ export class UsersService {
   }> {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
 
+    const ordering = this.getOrderClause(rawOrderBy);
+
     if (!user) throw new NotFoundError();
 
     const [records, total] = await this.recordsRepository.findAndCount({
       where: { user: { id: userId }, deleted: false },
       skip: (page - 1) * limit,
       take: limit,
+      ...(ordering && { order: { ...ordering } }),
     });
 
     const totalPages = Math.ceil(total / limit);
@@ -156,5 +161,19 @@ export class UsersService {
       );
       throw new ForbiddenError();
     }
+  }
+
+  getOrderClause(rawOrderBy: string) {
+    if (!rawOrderBy) return null;
+
+    const options = rawOrderBy.split("-");
+    if (options.length != 2)
+      throw new BadRequestError("invalid order by format");
+
+    const sortClause = {
+      [options[0]]: options[1] === "true" ? "DESC" : "ASC",
+    };
+
+    return sortClause;
   }
 }
